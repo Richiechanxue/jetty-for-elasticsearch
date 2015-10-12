@@ -5,6 +5,7 @@ h2. Compatibility
 The following table shows the versions of elasticsearch and jetty that Jetty Plugin was built with.
 
 |_. Jetty Plugin |_.  Elasticsearch    |_.  Jetty  |
+| 1.7.2 | 1.7.2    | 8.1.17.v20150415 |
 | 1.2.1 | 1.2.1    | 8.1.14.v20131031 |
 | 1.1.1-beta | 1.1.1    | 8.1.14.v20131031 |
 | 1.1.0-beta | 1.1.0    | 8.1.14.v20131031 |
@@ -37,10 +38,10 @@ $ bin/plugin -url https://oss-es-plugins.s3.amazonaws.com/elasticsearch-jetty/el
 The core of the plugin is JettyHttpServerTransport module that works as a replacement for NettyHttpServerTransport. To enable the elasticsearch-jetty plugin, the default netty http transport should be replaced with jetty http transport by adding the following line to @elasticsearch.yml@.
 
 <pre>
-http.type: com.sonian.elasticsearch.http.jetty.JettyHttpServerTransportModule
+sonian.elasticsearch.http.type: com.sonian.elasticsearch.http.jetty.JettyHttpServerModule
 </pre>
 
-The elasticsearch-jetty plugin adds @Server: Jetty(8.1.4.v20120524)@ header to all responses. So, it's possible to verify that jetty plugin is running by checking the response headers using the following curl command:
+The elasticsearch-jetty plugin adds @Server: Jetty(8.1.17.v20150415)@ header to all responses. So, it's possible to verify that jetty plugin is running by checking the response headers using the following curl command:
 
 <pre>
 $ curl -I "http://localhost:9200/"
@@ -48,7 +49,7 @@ HTTP/1.1 200 OK
 Content-Type: text/plain;charset=UTF-8
 Access-Control-Allow-Origin: *
 Content-Length: 0
-Server: Jetty(8.1.4.v20120524)
+Server: Jetty(8.1.17.v20150415)
 </pre>
 
 
@@ -76,7 +77,7 @@ h3. Adding SSL Support
 First step in enabling SSL support is generation of keys and certificates. The process is described on the <a href="http://wiki.eclipse.org/Jetty/Howto/Configure_SSL">How to Configure SSL page</a>. For the test purposes, the <a href="https://github.com/sonian/elasticsearch-jetty/blob/master/config/keystore">keystore</a> file from the elasticsearch-jetty plugin can be also used. The generated or downloaded keystore file should be places in the @config@ directory of elasticsearch. The SSL connector can be enabled by adding the following settings in the @elasticsearch.yml@ file:
 
 <pre>
-http.type: com.sonian.elasticsearch.http.jetty.JettyHttpServerTransportModule
+sonian.elasticsearch.http.type: com.sonian.elasticsearch.http.jetty.JettyHttpServerModule
 sonian.elasticsearch.http.jetty:
     config: jetty.xml,jetty-ssl.xml
     ssl_port: 9443
@@ -109,7 +110,7 @@ After the login service is configured, the next step is to set security constrai
 The following settings in @elasticsearch.yml@ will enable granular restrictions:
 
 <pre>
-http.type: com.sonian.elasticsearch.http.jetty.JettyHttpServerTransportModule
+sonian.elasticsearch.http.type: com.sonian.elasticsearch.http.jetty.JettyHttpServerModule
 sonian.elasticsearch.http.jetty:
     config: jetty.xml,jetty-hash-auth.xml,jetty-restrict-writes.xml
 </pre>
@@ -117,7 +118,7 @@ sonian.elasticsearch.http.jetty:
 Authentication can be used with SSL connector. The following settings will restrict access to all pages and enable SSL connector:
 
 <pre>
-http.type: com.sonian.elasticsearch.http.jetty.JettyHttpServerTransportModule
+sonian.elasticsearch.http.type: com.sonian.elasticsearch.http.jetty.JettyHttpServerModule
 sonian.elasticsearch.http.jetty:
     config: jetty.xml,jetty-ssl.xml,jetty-hash-auth.xml,jetty-restrict-all.xml
     ssl_port: 9443
@@ -133,7 +134,7 @@ The elasticsearch-jetty plugin contains two versions of the HTTP Server Transpor
 In order to setup request logging, elasticsearch should be switched to use @FilterHttpTransportModule@. It can be done by the following setting:
 
 <pre>
-http.type: com.sonian.elasticsearch.http.filter.FilterHttpServerTransportModule
+http.type: com.sonian.elasticsearch.http.filter.FilterHttpServerModule
 </pre>
 
 Then @FilterHttpTransportModule@ has to be configured with an appropriate filter:
@@ -265,7 +266,3 @@ It also exposes two elasticsearch objects using the following ids:
 h2. User group
 
 Join <a href="https://groups.google.com/forum/#!forum/elasticsearch-jetty">elasticsearch-jetty group</a> for questions and discussions related to this plugin.
-
-
-
-

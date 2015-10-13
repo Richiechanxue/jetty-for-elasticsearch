@@ -55,6 +55,11 @@ public class JettyHttpServerRestChannel extends HttpChannel {
     public void sendResponse(RestResponse response) {
         resp.setContentType(response.contentType());
         resp.addHeader("Access-Control-Allow-Origin", "*");
+
+        if (response.getHeaders() != null
+            && response.getHeaders().containsKey("Location")) {
+            resp.addHeader("Location", response.getHeaders().get("Location").get(0));
+        }
         if (response.status() != null) {
             resp.setStatus(response.status().getStatus());
         } else {
